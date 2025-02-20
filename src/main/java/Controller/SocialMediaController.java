@@ -1,5 +1,11 @@
 package Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Model.Account;
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -9,6 +15,13 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    AccountService accountService;
+    MessageService messageService;
+
+    public SocialMediaController(){
+        accountService = new AccountService();
+        messageService = new MessageService();
+    }
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -17,6 +30,8 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
+        app.post("register", this::userRegistration);
+        app.post("login", this::userLogin);
 
         return app;
     }
@@ -27,6 +42,50 @@ public class SocialMediaController {
      */
     private void exampleHandler(Context context) {
         context.json("sample text");
+    }
+    /*
+     * Handler for user Registration
+     * This handler utilizes the userRegistration method from accountService
+     * to registor a new user. If the registaration is succesful, it returns
+     * new user with an ID attached. If not, it returns null
+     */
+    private void userRegistration(Context context)throws JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(context.body(), Account.class);
+        Account registeredUser = accountService.userRegistration(account);
+        if(account.getUsername().length() == 0)  {
+            context.status(400);
+        }
+       else if(account.getPassword().length() < 4) {
+            context.status(400);
+        }
+       else if(accountService.userLogin(account) != null){
+            context.status(400);
+        }
+       else if(registeredUser != null) {
+            context.json(om.writeValueAsString(registeredUser)).status(200);
+        }else{
+            context.status(400);
+        }
+    }
+
+
+    /*
+     * User login handler
+     * This handler checks if a given user credentials are valid
+     * It returns the user, if the user credentials exist in the database
+     * It returns null if not
+     */
+    private void userLogin(Context context) throws JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(context.body(), Account.class);
+        Account userLogin = accountService.userLogin(account);
+        
+        if(userLogin != null) {
+            context.json(om.writeValueAsString(userLogin)).status(200);
+        }else{
+            context.status(401);
+        }
     }
 
 
