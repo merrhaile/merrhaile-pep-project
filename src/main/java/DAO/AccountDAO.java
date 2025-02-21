@@ -50,7 +50,8 @@ public class AccountDAO {
             ResultSet rs = ps.executeQuery();
 
             if(rs.next()){
-                return new Account(rs.getString("username"), rs.getString("password")) ;     
+                int account_id = (int) rs.getLong(1);
+                return new Account(account_id, rs.getString("username"), rs.getString("password")) ;     
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

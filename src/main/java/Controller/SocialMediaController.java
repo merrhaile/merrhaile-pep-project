@@ -53,16 +53,8 @@ public class SocialMediaController {
         ObjectMapper om = new ObjectMapper();
         Account account = om.readValue(context.body(), Account.class);
         Account registeredUser = accountService.userRegistration(account);
-        if(account.getUsername().length() == 0)  {
-            context.status(400);
-        }
-       else if(account.getPassword().length() < 4) {
-            context.status(400);
-        }
-       else if(accountService.userLogin(account) != null){
-            context.status(400);
-        }
-       else if(registeredUser != null) {
+        
+        if(registeredUser != null) {
             context.json(om.writeValueAsString(registeredUser)).status(200);
         }else{
             context.status(400);
@@ -79,11 +71,12 @@ public class SocialMediaController {
     private void userLogin(Context context) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
         Account account = om.readValue(context.body(), Account.class);
-        Account userLogin = accountService.userLogin(account);
+        Account userDetail = accountService.userLogin(account);
         
-        if(userLogin != null) {
-            context.json(om.writeValueAsString(userLogin)).status(200);
-        }else{
+        if(userDetail != null) {
+            context.json(om.writeValueAsString(userDetail)).status(200);
+        }
+        else{
             context.status(401);
         }
     }
