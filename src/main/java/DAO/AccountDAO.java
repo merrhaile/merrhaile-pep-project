@@ -44,14 +44,17 @@ public class AccountDAO {
         Connection con = ConnectionUtil.getConnection();
 
         try {
-            String sql = "SELECT username, password FROM account WHERE username = ?";
+            String sql = "SELECT * FROM account WHERE username = ? AND password = ?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, account.getUsername());
+            ps.setString(2, account.getPassword());
             ResultSet rs = ps.executeQuery();
 
             if(rs.next()){
                 int account_id = (int) rs.getLong(1);
-                return new Account(account_id, rs.getString("username"), rs.getString("password")) ;     
+                String username = rs.getString(2);
+                String password = rs.getString(3);
+                return new Account(account_id, username, password) ;     
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

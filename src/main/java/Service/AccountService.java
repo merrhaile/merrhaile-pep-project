@@ -36,10 +36,8 @@ public class AccountService {
      * returns account object
      */
     public Account userLogin(Account account){
+        if(account.getUsername().length() == 0 || account.getPassword().length() == 0) return null;
         Account userDetail = accountDAO.userLogin(account);
-        if(userDetail == null) return null;
-        if(account.getUsername().length() == 0) return null;
-        if(userDetail.getPassword() != account.getPassword()) return null;
         System.out.println(userDetail);
        return userDetail;
     }
