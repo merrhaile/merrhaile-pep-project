@@ -37,8 +37,11 @@ public class AccountService {
      */
     public Account userLogin(Account account){
         if(account.getUsername().length() == 0 || account.getPassword().length() == 0) return null;
+        
         Account userDetail = accountDAO.userLogin(account);
-        System.out.println(userDetail);
-       return userDetail;
+        if(userDetail == null) return null;
+        if(!account.getPassword().equals(userDetail.getPassword())) return null;
+       
+        return userDetail;
     }
 }
