@@ -37,6 +37,7 @@ public class SocialMediaController {
         app.post("login", this::userLogin);
         app.post("messages", this::createMessage);
         app.get("messages", this::retrieveAllMessages);
+        app.get("messages/{message_id}", this::retrieveMessageByMessageId);
         return app;
     }
 
@@ -97,9 +98,20 @@ public class SocialMediaController {
        }
     }
 
-    private void retrieveAllMessages(Context context){
+    private void retrieveAllMessages(Context context) {
         List<Message> list = messageService.retrieveAllMessages();
         context.json(list).status(200);
     }
 
+    public void retrieveMessageByMessageId(Context context)throws JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Integer message_id = Integer.valueOf(context.pathParam("message_id"));
+        Message message = messageService.retrieveMessageByMessageId(message_id);
+
+        if(message != null){
+            context.json(om.writeValueAsString(message)).status(200);
+        }else {
+            context.json(context.body()).status(200);
+        }
+    }
 }
