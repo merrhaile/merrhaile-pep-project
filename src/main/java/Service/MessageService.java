@@ -53,7 +53,7 @@ public class MessageService {
        
     }
 
-    public void retrieveAllMessagesForUser(){
-
+    public List<Message> retrieveAllMessagesForUser(int account_id){
+        return messageDAO.retrieveAllMessagesForUser(account_id);
     }
 }

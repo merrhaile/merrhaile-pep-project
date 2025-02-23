@@ -1,5 +1,6 @@
 package Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,6 +41,7 @@ public class SocialMediaController {
         app.get("messages/{message_id}", this::retrieveMessageByMessageId);
         app.delete("messages/{message_id}", this::deleteMessageByMessageId);
         app.patch("messages/{message_id}", this::updateMessageByMessageId);
+        app.get("accounts/{account_id}/messages", this::retrieveAllMessagesForUser);
         return app;
     }
 
@@ -113,7 +115,7 @@ public class SocialMediaController {
         if(message != null){
             context.json(om.writeValueAsString(message)).status(200);
         }else {
-            context.json(context.body()).status(200);
+            context.status(200).result("");
         }
     }
 
@@ -125,7 +127,7 @@ public class SocialMediaController {
         if(message != null){
             context.json(om.writeValueAsString(message)).status(200);
         }else {
-            context.json(context.body()).status(200);
+            context.status(200).result("");
         }
        
     }
@@ -141,7 +143,11 @@ public class SocialMediaController {
             context.status(400);
         }
     }
-    public void retrieveAllMessagesForUser(Context context){
-
+    public void retrieveAllMessagesForUser(Context context) throws JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Integer account_id = Integer.valueOf(context.pathParam("account_id")); 
+        List<Message> messages = messageService.retrieveAllMessagesForUser(account_id);
+        
+        context.json(om.writeValueAsString(messages)).status(200);
     }
 }

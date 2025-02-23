@@ -31,8 +31,6 @@ public class MessageDAO {
                 // long time_posted_epoch = rs.getLong("time_posted_epoch");
                 return new Message(message_id, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());
             }
-
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -56,11 +54,10 @@ public class MessageDAO {
                 message.setTime_posted_epoch(rs.getLong(4));
                 list.add(message);
             }
-            return list;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return List.of();
+        return list;
     }
 
     public Message retrieveMessageByMessageId(int message_id){
@@ -119,8 +116,28 @@ public class MessageDAO {
         return result;
     }
 
-    public void retrieveAllMessagesForUser(){
+    public List<Message> retrieveAllMessagesForUser(int account_id){
+        Connection con =  ConnectionUtil.getConnection();
+        List<Message> messages = new ArrayList<>();
+        try {
+            String sql = "SELECT message_id, posted_by, message_text, time_posted_epoch FROM account " +
+                         "INNER JOIN message ON account.account_id = message.posted_by WHERE account_id = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, account_id);
+            ResultSet rs = ps.executeQuery();
 
+            while(rs.next()){
+                Message message = new Message();
+                message.setMessage_id((int)rs.getLong(1));
+                message.setPosted_by((int) rs.getLong(2));
+                message.setMessage_text(rs.getString(3));
+                message.setTime_posted_epoch(rs.getLong(4));
+                messages.add(message);
+            }    
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return messages;
     }
 
     
