@@ -11,8 +11,17 @@ import java.sql.SQLException;
 import Model.Message;
 import Util.ConnectionUtil;
 
+/*
+ * In this layer, the class utilizes JDBC classes to interact with a database and persist data
+ * ConnectionUtil custom class handles the connection with the database
+ * Among others PreparedStatement and ResultSet are commonly used to execute query and to 
+ * retreive results
+ */
 public class MessageDAO {
     
+    /*
+     * Persists a new message in the database
+     */
     public Message createMessage(Message message){
         Connection con = ConnectionUtil.getConnection();
         try {
@@ -37,6 +46,9 @@ public class MessageDAO {
         return null;
     }
 
+    /*
+     * Retrieves all messages from the database
+     */
     public List<Message> retrieveAllMessages(){
         Connection con = ConnectionUtil.getConnection();
         List<Message> list = new ArrayList<>();
@@ -60,6 +72,9 @@ public class MessageDAO {
         return list;
     }
 
+    /*
+     * Retrieve a message by message_id
+     */
     public Message retrieveMessageByMessageId(int message_id){
         Connection con = ConnectionUtil.getConnection();
         try {
@@ -81,6 +96,9 @@ public class MessageDAO {
         return null;
     }
 
+    /*
+     * Deletes message by message_id
+     */
     public boolean deleteMessageByMessageId(int message_id){
         Connection con = ConnectionUtil.getConnection();
         boolean result =false;
@@ -98,6 +116,9 @@ public class MessageDAO {
         return result;
     }
 
+    /*
+     * Updates a message by message_id with an input text
+     */
     public boolean updateMessageByMessageId(int message_id, String text){
         Connection con = ConnectionUtil.getConnection();
         boolean result =false;
@@ -116,6 +137,9 @@ public class MessageDAO {
         return result;
     }
 
+    /*
+     * Retrieves all messages that shares the same account_id
+     */
     public List<Message> retrieveAllMessagesForUser(int account_id){
         Connection con =  ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();

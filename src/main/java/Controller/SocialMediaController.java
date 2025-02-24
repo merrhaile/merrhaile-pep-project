@@ -22,6 +22,9 @@ public class SocialMediaController {
     AccountService accountService;
     MessageService messageService;
 
+    /*
+     * Default constructor intializes the service classees
+     */
     public SocialMediaController(){
         accountService = new AccountService();
         messageService = new MessageService();
@@ -56,8 +59,10 @@ public class SocialMediaController {
      * Handler for user Registration
      * This handler utilizes the userRegistration method from accountService
      * to registor a new user. If the registaration is succesful, it returns
-     * new user with an ID attached. If not, it returns null
+     * new user with an ID attached, status:200. 
+     * If not, it returns null staus: 400
      */
+
     private void userRegistration(Context context)throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
         Account account = om.readValue(context.body(), Account.class);
@@ -75,8 +80,10 @@ public class SocialMediaController {
      * User login handler
      * This handler checks if a given user credentials are valid
      * It returns the user, if the user credentials exist in the database
-     * It returns null if not
+     * with successfull status: 200
+     * It returns null if not status:401
      */
+
     private void userLogin(Context context) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
         Account account = om.readValue(context.body(), Account.class);
@@ -89,6 +96,12 @@ public class SocialMediaController {
             context.status(401);
         }
     }
+    /*
+     * The handler creates a new message by utilizing createMessage method from
+     * messageService and pass the request body as an argument.
+     * If successful, it returns the created message with status:200
+     * if not, it response status; 400
+     */
 
     private void createMessage(Context context) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
@@ -101,11 +114,23 @@ public class SocialMediaController {
         context.status(400);
        }
     }
+    /*
+     * This handler uses retrieveAllMessages method from messageService
+     * to get all the list of messages.
+     * it respondes with status:200 whether the list is empty or not
+     */
 
     private void retrieveAllMessages(Context context) {
         List<Message> list = messageService.retrieveAllMessages();
         context.json(list).status(200);
     }
+
+    /*
+     * The handler retrieves a single message with a given ID. It supplies
+     * the ID as an argument to retrieveMessageByMessageId from the service class
+     * If successful, it returns the message with status:200
+     * If no message by the given ID found, it returns empty string with status: 200
+     */
 
     public void retrieveMessageByMessageId(Context context)throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
@@ -118,6 +143,12 @@ public class SocialMediaController {
             context.status(200).result("");
         }
     }
+
+    /*
+     * The handler invokes deleteMessageByMessageId from messageService and
+     * deletes a message by the given ID if message exist with status:200
+     * if the message doesn't exist, it returns an empty string with status:200
+     */
 
     public void deleteMessageByMessageId(Context context) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
@@ -132,6 +163,12 @@ public class SocialMediaController {
        
     }
 
+    /*
+     * Invokes updateMessageByMessageId from messageService by supplying message_id
+     * as an argument. If message exists, it gets deleted with satus: 200
+     * if not, it replys with staus:400 
+     */
+
     public void updateMessageByMessageId(Context context) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
         Message messageRequest = om.readValue(context.body(), Message.class);
@@ -143,11 +180,17 @@ public class SocialMediaController {
             context.status(400);
         }
     }
+
+    /*
+     * Retrievs all the messages by a given account_id
+     * Replies with satus:200 messages by a user whether empty or not
+     */
+
     public void retrieveAllMessagesForUser(Context context) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
         Integer account_id = Integer.valueOf(context.pathParam("account_id")); 
         List<Message> messages = messageService.retrieveAllMessagesForUser(account_id);
-        
+
         context.json(om.writeValueAsString(messages)).status(200);
     }
 }

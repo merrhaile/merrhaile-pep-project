@@ -10,6 +10,10 @@ import Model.Account;
 public class AccountService {
     private AccountDAO accountDAO;
 
+    /*
+     * Default constructor creates an instance of AccountDAO and 
+     * assign it to the insance variable
+     */
     public AccountService(){
         accountDAO = new AccountDAO();
     }

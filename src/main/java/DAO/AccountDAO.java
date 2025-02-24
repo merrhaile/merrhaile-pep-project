@@ -9,6 +9,12 @@ import java.sql.SQLException;
 import Model.Account;
 import Util.ConnectionUtil;
 
+/*
+ * In this layer, the class utilizes JDBC classes to interact with a database and persist data
+ * ConnectionUtil custom class handles the connection with the database
+ * Among others PreparedStatement and ResultSet are commonly used to execute query and to 
+ * retreive results
+ */
 public class AccountDAO {
     
     /*
